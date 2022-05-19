@@ -1,2 +1,17 @@
-# cpp-smaller-projects
-This is a repository for smaller projects I did in C++. 
+## Zadání
+
+Úkolem je realizovat třídu CVATRegister, která bude implementovat databázi kontrolních hlášení DPH.
+
+Pro plánované důslednější potírání daňových úniků je zaveden systém kontrolních hlášení. V databázi jsou zavedené jednotlivé firmy, a do databáze jsou zaznamenávané jednotlivé vydané faktury, které daná firma vydala. Firmy lze do databáze zadávat a lze je rušit. Firma je identifikována svým jménem, adresou a daňovým identifikátorem (id). Daňový identifikátor je unikátní přes celou databázi. Jména a adresy se mohou opakovat, ale dvojice (jméno, adresa) je opět v databázi unikátní. Tedy v databázi může být mnoho firem ACME, mnoho firem může mít adresu Praha, ale firma ACME bydlící sídlící ve městě Praha může být v databázi pouze jedna. Při porovnávání daňových identifikátorů **rozlišujeme** malá a velká písmena, u jmen a adres naopak **nerozlišujeme** malá a velká písmena.
+
+Veřejné rozhraní je uvedeno níže. Obsahuje následující:
+
+-   Konstruktor bez parametrů. Tento konstruktor inicializuje instanci třídy tak, že vzniklá instance je zatím prázdná (neobsahuje žádné záznamy).
+-   Destruktor. Uvolňuje prostředky, které instance alokovala.
+-   Metoda newCompany(name, addr, id) přidá do existující databáze další záznam. Parametry name a addr reprezentují jméno a adresu, parametr id udává daňový identifikátor. Metoda vrací hodnotu true, pokud byl záznam přidán, nebo hodnotu false, pokud přidán nebyl (protože již v databázi existoval záznam se stejným jménem a adresou, nebo záznam se stejným id).
+-   Metody cancelCompany (name, addr) / cancelCompany (id) odstraní záznam z databáze. Parametrem je jednoznačná identifikace pomocí jména a adresy (první varianta) nebo pomocí daňového identifikátoru (druhá varianta). Pokud byl záznam skutečně odstraněn, vrátí metoda hodnotu true. Pokud záznam neodstraní (protože neexistovala firma s touto identifikací), vrátí metoda hodnotu false.
+-   Metody invoice (name, addr, amount) / invoice (id, amount) zaznamenají příjem ve výši amount. Varianty jsou dvě - firma je buď identifikována svým jménem a adresou, nebo daňovým identifikátorem. Pokud metoda uspěje, vrací true, pro neúspěch vrací false (neexistující firma).
+-   Metoda audit ( name, addr, sum ) / audit ( id, sum ) vyhledá součet příjmů pro firmu se zadaným jménem a adresou nebo firmu zadanou daňovým identifikátorem. Nalezený součet uloží do výstupního parametru sum. Metoda vrátí true pro úspěch, false pro selhání (neexistující firma).
+-   Metoda medianInvoice () vyhledá medián hodnoty faktury. Do vypočteného mediánu se započtou všechny úspěšně zpracované faktury zadané voláním invoice. Tedy **nezapočítávají** se faktury, které nešlo přiřadit (volání invoice selhalo), ale započítávají se všechny dosud registrované faktury, tedy při výmazu firmy se **neodstraňují** její faktury z výpočtu mediánu. Pokud je v systému zadaný sudý počet faktur, vezme se vyšší ze dvou prostředních hodnot. Pokud systém zatím nezpracoval žádnou fakturu, bude vrácena hodnota 0.
+-   Metody firstCompany ( name, addr ) / nextCompany ( name, addr ) slouží k procházení existujícího seznamu firem v naší databázi. Firmy jsou procházené v abecedním pořadí podle jejich jména. Pokud mají dvě firmy stejná jména, rozhoduje o pořadí jejich adresa. Metoda firstCompany nalezne první firmu. Pokud je seznam firem prázdný, vrátí metoda hodnotu false. V opačném případě vrátí metoda hodnotu true a vyplní výstupní parametry name a addr. Metoda nextCompany funguje obdobně, nalezne další firmu, která v seznamu následuje za firmou určenou parametry. Pokud za name a addr již v seznamu není další firma, metoda vrací hodnotu false. V opačném případě metoda vrátí true a přepíše parametry name a addr jménem a adresou následující firmy.
+
